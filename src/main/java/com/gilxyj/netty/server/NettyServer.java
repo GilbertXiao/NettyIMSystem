@@ -16,7 +16,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  * @微信 gilbertxy
  * @GitHub https://github.com/GilbertXiao
  * @Gitee https://gitee.com/gilbertxiao
- * @create: 2020-09-29 22:30
+ * @create: 2020-10-03 11:49
  **/
 public class NettyServer {
 
@@ -27,19 +27,17 @@ public class NettyServer {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
         ServerBootstrap serverBootstrap = new ServerBootstrap();
-        serverBootstrap
-                //1.指定线程模型
-                .group(bossGroup, workerGroup)
-                //2.指定IO类型为NIO
+
+        serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
-                //3.IO处理逻辑
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
-
+                        nioSocketChannel.pipeline().addLast(new FirstServerHandler());
                     }
                 });
-        bind(serverBootstrap, BEGIN_PORT);
+        bind(serverBootstrap,BEGIN_PORT);
+
     }
 
     private static void bind(final ServerBootstrap serverBootstrap, final int port) {
@@ -53,4 +51,5 @@ public class NettyServer {
                     }
                 });
     }
+
 }

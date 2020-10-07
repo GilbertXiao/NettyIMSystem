@@ -9,6 +9,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+
 /**
  * @program: nettylearn
  * @description:
@@ -19,58 +20,45 @@ import java.util.concurrent.TimeUnit;
  * @微信 gilbertxy
  * @GitHub https://github.com/GilbertXiao
  * @Gitee https://gitee.com/gilbertxiao
- * @create: 2020-09-30 00:01
+ * @create: 2020-10-03 15:47
  **/
 public class NettyClient {
 
-    public static final int MAX_RETRY = 5;
+    private static final int MAX_RETRY = 5;
+    private static final String HOST = "127.0.0.1";
+    private static final int PORT = 8000;
 
     public static void main(String[] args) {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
-        bootstrap
-                //1.指定线程模型
-                .group(workerGroup)
-                //2.指定IO类型为NIO
+        bootstrap.group(workerGroup)
                 .channel(NioSocketChannel.class)
-                //3.IO处理逻辑
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-
+                        socketChannel.pipeline().addLast(new FirstClientHandler());
                     }
                 });
-        //4.建立连接
-        /*bootstrap.connect("127.0.0.1", 80).addListener(future -> {
-            if (future.isSuccess()) {
-                System.out.println("连接成功");
-            } else {
-                System.err.println("连接失败！");
-            }
-        });*/
-        connect(bootstrap, "127.0.0.1", 8000, MAX_RETRY);
+        connect(bootstrap, HOST, PORT, MAX_RETRY);
     }
 
     private static void connect(Bootstrap bootstrap, String host, int port, int retry) {
-        bootstrap.connect(host, port)
-                .addListener(future -> {
-                    if (future.isSuccess()) {
-                        System.out.println("连接成功");
-                    } else {
-                        //第几次连接
-                        int order = (MAX_RETRY - retry) + 1;
-                        //还剩多少次连接
-                        int leftRetry = retry - 1;
-                        if (leftRetry == 0) {
-                            System.err.println("重试次数已经用完，放弃连接");
-                        }
-                        //2的order次方
-                        int delay = 1 << order;
-
-                        System.err.println(new Date() + ":连接失败，第" + order + "次重连...");
-
-                        bootstrap.config().group().schedule(() -> connect(bootstrap, host, port, leftRetry), delay, TimeUnit.SECONDS);
-                    }
-                });
+        bootstrap.connect(host, port).addListener(future -> {
+            if (future.isSuccess()) {
+                System.out.println("连接成功!");
+            }else {
+                // 第几次重连
+                int order = (MAX_RETRY - retry) + 1;
+                //还剩多少次连接
+                int leftRetry = retry - 1;
+                if (leftRetry == 0) {
+                    System.err.println("重试次数已经用完，放弃连接");
+                }
+                // 本次重连的间隔
+                int delay = 1 << order;
+                System.err.println(new Date() + ": 连接失败，第" + order + "次重连……");
+                bootstrap.config().group().schedule(() -> connect(bootstrap, host, port, retry - 1), delay, TimeUnit.SECONDS);
+            }
+        });
     }
 }
