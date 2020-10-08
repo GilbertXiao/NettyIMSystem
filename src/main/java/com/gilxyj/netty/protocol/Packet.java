@@ -1,4 +1,4 @@
-package com.gilxyj.netty.command;
+package com.gilxyj.netty.protocol;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
@@ -26,7 +26,7 @@ public abstract class Packet {
 
 
     @JSONField(serialize = false)
-    abstract Byte getCommand();
+    public abstract Byte getCommand();
 
 
 }

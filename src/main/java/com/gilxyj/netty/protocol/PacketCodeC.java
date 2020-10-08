@@ -1,6 +1,9 @@
-package com.gilxyj.netty.command;
+package com.gilxyj.netty.protocol;
 
 
+import com.gilxyj.netty.protocol.command.Command;
+import com.gilxyj.netty.protocol.request.LoginRequestPacket;
+import com.gilxyj.netty.protocol.response.LoginResponsePacket;
 import com.gilxyj.netty.serialize.Serializer;
 import com.gilxyj.netty.serialize.impl.JSONSerializer;
 import io.netty.buffer.ByteBuf;
@@ -25,6 +28,8 @@ public class PacketCodeC {
 
     private static final int MAGIX_NUMBER = 0x12345678;
 
+    public static final PacketCodeC INSTANCE = new PacketCodeC();
+
     private static final Map<Byte, Class<? extends Packet>> packetTypeMap;
 
     private static final Map<Byte, Serializer> serializerMap;
@@ -32,6 +37,7 @@ public class PacketCodeC {
     static {
         packetTypeMap = new HashMap<>();
         packetTypeMap.put(Command.LOGIN_REQUEST, LoginRequestPacket.class);
+        packetTypeMap.put(Command.LOGIN_RESPONSE, LoginResponsePacket.class);
 
         serializerMap = new HashMap<>();
         JSONSerializer jsonSerializer = new JSONSerializer();
@@ -47,9 +53,9 @@ public class PacketCodeC {
 
     }
 
-    public ByteBuf encode(Packet packet) {
+    public ByteBuf encode(ByteBufAllocator byteBufAllocator, Packet packet) {
         //1. 创建ByteBuf 对象
-        ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
+        ByteBuf byteBuf = byteBufAllocator.ioBuffer();
         //2. 序列化java 对象
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 

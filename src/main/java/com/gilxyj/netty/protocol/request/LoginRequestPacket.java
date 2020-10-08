@@ -1,8 +1,10 @@
-package com.gilxyj.netty.command;
+package com.gilxyj.netty.protocol.request;
 
+
+import com.gilxyj.netty.protocol.Packet;
 import lombok.Data;
 
-import static com.gilxyj.netty.command.Command.LOGIN_REQUEST;
+import static com.gilxyj.netty.protocol.command.Command.LOGIN_REQUEST;
 
 
 /**
@@ -18,9 +20,9 @@ import static com.gilxyj.netty.command.Command.LOGIN_REQUEST;
  * @create: 2020-10-05 17:37
  **/
 @Data
-public class LoginRequestPacket extends Packet{
+public class LoginRequestPacket extends Packet {
 
-    private Integer userId;
+    private String userId;
 
     private String username;
 
@@ -28,7 +30,7 @@ public class LoginRequestPacket extends Packet{
 
 
     @Override
-    Byte getCommand() {
+    public Byte getCommand() {
         return LOGIN_REQUEST;
     }
 }
