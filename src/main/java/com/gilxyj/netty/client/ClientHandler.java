@@ -4,6 +4,8 @@ import com.gilxyj.netty.protocol.Packet;
 import com.gilxyj.netty.protocol.PacketCodeC;
 import com.gilxyj.netty.protocol.request.LoginRequestPacket;
 import com.gilxyj.netty.protocol.response.LoginResponsePacket;
+import com.gilxyj.netty.protocol.response.MessageResponsePacket;
+import com.gilxyj.netty.util.LoginUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -37,10 +39,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             LoginResponsePacket loginResponsePacket = (LoginResponsePacket) packet;
 
             if (loginResponsePacket.isSuccess()) {
+                LoginUtil.markAsLogin(ctx.channel());
                 System.out.println(new Date()+":客户端登陆成功");
             }else {
                 System.out.println(new Date()+":客户端登陆失败，原因："+loginResponsePacket.getReason());
             }
+        } else if (packet instanceof MessageResponsePacket) {
+            MessageResponsePacket responsePacket = (MessageResponsePacket) packet;
+            System.out.println(new Date() + ":收到服务器的消息:" + responsePacket.getMessage());
         }
 
 
