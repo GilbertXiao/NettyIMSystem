@@ -1,5 +1,11 @@
 package com.gilxyj.netty.server;
 
+import com.gilxyj.netty.server.handler.inbound.InBoundHandlerA;
+import com.gilxyj.netty.server.handler.inbound.InBoundHandlerB;
+import com.gilxyj.netty.server.handler.inbound.InBoundHandlerC;
+import com.gilxyj.netty.server.handler.outbound.OutBoundHandlerA;
+import com.gilxyj.netty.server.handler.outbound.OutBoundHandlerB;
+import com.gilxyj.netty.server.handler.outbound.OutBoundHandlerC;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -37,7 +43,16 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
-                        nioSocketChannel.pipeline().addLast(new ServerHandler());
+                        //inBound 处理读数据的逻辑链
+                        nioSocketChannel.pipeline().addLast(new InBoundHandlerA());
+                        nioSocketChannel.pipeline().addLast(new InBoundHandlerB());
+                        nioSocketChannel.pipeline().addLast(new InBoundHandlerC());
+
+                        //outBound 处理写数据的逻辑链
+                        nioSocketChannel.pipeline().addLast(new OutBoundHandlerA());
+                        nioSocketChannel.pipeline().addLast(new OutBoundHandlerB());
+                        nioSocketChannel.pipeline().addLast(new OutBoundHandlerC());
+
                     }
                 });
         bind(serverBootstrap,BEGIN_PORT);
