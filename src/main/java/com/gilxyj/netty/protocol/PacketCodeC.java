@@ -57,9 +57,8 @@ public class PacketCodeC {
 
     }
 
-    public ByteBuf encode(ByteBufAllocator byteBufAllocator, Packet packet) {
-        //1. 创建ByteBuf 对象
-        ByteBuf byteBuf = byteBufAllocator.ioBuffer();
+    public void encode(ByteBuf byteBuf, Packet packet) {
+
         //2. 序列化java 对象
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
@@ -70,7 +69,6 @@ public class PacketCodeC {
         byteBuf.writeByte(packet.getCommand());
         byteBuf.writeInt(bytes.length);
         byteBuf.writeBytes(bytes);
-        return byteBuf;
 
     }
 

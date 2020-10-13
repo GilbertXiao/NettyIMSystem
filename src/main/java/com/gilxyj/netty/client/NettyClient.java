@@ -1,5 +1,9 @@
 package com.gilxyj.netty.client;
 
+import com.gilxyj.netty.client.handler.LoginResponseHandler;
+import com.gilxyj.netty.client.handler.MessageResponseHandler;
+import com.gilxyj.netty.codec.PacketDecoder;
+import com.gilxyj.netty.codec.PacketEncoder;
 import com.gilxyj.netty.protocol.PacketCodeC;
 import com.gilxyj.netty.protocol.request.MessageRequestPacket;
 import com.gilxyj.netty.util.LoginUtil;
@@ -47,7 +51,10 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(new ClientHandler());
+                        socketChannel.pipeline().addLast(new PacketDecoder());
+                        socketChannel.pipeline().addLast(new LoginResponseHandler());
+                        socketChannel.pipeline().addLast(new MessageResponseHandler());
+                        socketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 });
         connect(bootstrap, HOST, PORT, MAX_RETRY);
@@ -86,8 +93,7 @@ public class NettyClient {
 
                     MessageRequestPacket packet = new MessageRequestPacket();
                     packet.setMessage(line);
-                    ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(channel.alloc(), packet);
-                    channel.writeAndFlush(byteBuf);
+                    channel.writeAndFlush(packet);
                 }
             }
 

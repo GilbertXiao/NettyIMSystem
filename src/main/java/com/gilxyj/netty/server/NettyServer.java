@@ -1,5 +1,9 @@
 package com.gilxyj.netty.server;
 
+import com.gilxyj.netty.codec.PacketDecoder;
+import com.gilxyj.netty.codec.PacketEncoder;
+import com.gilxyj.netty.server.handler.LoginRequestHandler;
+import com.gilxyj.netty.server.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -37,7 +41,10 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
-                        nioSocketChannel.pipeline().addLast(new ServerHandler());
+                        nioSocketChannel.pipeline().addLast(new PacketDecoder());
+                        nioSocketChannel.pipeline().addLast(new LoginRequestHandler());
+                        nioSocketChannel.pipeline().addLast(new MessageRequestHandler());
+                        nioSocketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 });
         bind(serverBootstrap,BEGIN_PORT);
