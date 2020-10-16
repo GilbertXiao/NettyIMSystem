@@ -3,8 +3,7 @@ package com.gilxyj.netty.server;
 import com.gilxyj.netty.codec.PacketDecoder;
 import com.gilxyj.netty.codec.PacketEncoder;
 import com.gilxyj.netty.codec.Spliter;
-import com.gilxyj.netty.protocol.request.LoginRequestPacket;
-import com.gilxyj.netty.server.handler.FirstServerHandler;
+import com.gilxyj.netty.server.handler.LifeCycleTestHandler;
 import com.gilxyj.netty.server.handler.LoginRequestHandler;
 import com.gilxyj.netty.server.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -13,7 +12,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 /**
  * @program: nettylearn
@@ -46,7 +44,7 @@ public class NettyServer {
                     @Override
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
                         //nioSocketChannel.pipeline().addLast(new FirstServerHandler());
-                        //nioSocketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4));
+                        nioSocketChannel.pipeline().addLast(new LifeCycleTestHandler());
                         nioSocketChannel.pipeline().addLast(new Spliter());
                         nioSocketChannel.pipeline().addLast(new PacketDecoder());
                         nioSocketChannel.pipeline().addLast(new LoginRequestHandler());

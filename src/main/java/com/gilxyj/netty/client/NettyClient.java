@@ -1,6 +1,6 @@
 package com.gilxyj.netty.client;
 
-import com.gilxyj.netty.client.handler.FirstClientHandler;
+
 import com.gilxyj.netty.client.handler.LoginResponseHandler;
 import com.gilxyj.netty.client.handler.MessageResponseHandler;
 import com.gilxyj.netty.codec.PacketDecoder;
@@ -94,9 +94,8 @@ public class NettyClient {
                     Scanner sc = new Scanner(System.in);
                     String line = sc.nextLine();
 
-                    for (int i = 0; i < 1000; i++) {
-                        channel.writeAndFlush(new MessageRequestPacket(line));
-                    }
+                    channel.writeAndFlush(new MessageRequestPacket(line));
+
                 }
             }
         }).start();
