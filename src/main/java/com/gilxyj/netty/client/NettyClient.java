@@ -1,13 +1,25 @@
 package com.gilxyj.netty.client;
 
+import com.gilxyj.netty.client.handler.FirstClientHandler;
+import com.gilxyj.netty.client.handler.LoginResponseHandler;
+import com.gilxyj.netty.client.handler.MessageResponseHandler;
+import com.gilxyj.netty.codec.PacketDecoder;
+import com.gilxyj.netty.codec.PacketEncoder;
+import com.gilxyj.netty.codec.Spliter;
+import com.gilxyj.netty.protocol.request.MessageRequestPacket;
+import com.gilxyj.netty.util.LoginUtil;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 import java.util.Date;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 
@@ -40,7 +52,13 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(new FirstClientHandler());
+                        //socketChannel.pipeline().addLast(new FirstClientHandler());
+                        //socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4));
+                        socketChannel.pipeline().addLast(new Spliter());
+                        socketChannel.pipeline().addLast(new PacketDecoder());
+                        socketChannel.pipeline().addLast(new LoginResponseHandler());
+                        socketChannel.pipeline().addLast(new MessageResponseHandler());
+                        socketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 });
         connect(bootstrap, HOST, PORT, MAX_RETRY);
@@ -50,6 +68,8 @@ public class NettyClient {
         bootstrap.connect(host, port).addListener(future -> {
             if (future.isSuccess()) {
                 System.out.println("连接成功!");
+                Channel channel = ((ChannelFuture) future).channel();
+                startConsoleThread(channel);
             }else {
                 // 第几次重连
                 int order = (MAX_RETRY - retry) + 1;
@@ -64,5 +84,21 @@ public class NettyClient {
                 bootstrap.config().group().schedule(() -> connect(bootstrap, host, port, retry - 1), delay, TimeUnit.SECONDS);
             }
         });
+    }
+
+    private static void startConsoleThread(Channel channel) {
+        new Thread(() -> {
+            while (!Thread.interrupted()) {
+                if (LoginUtil.hasLogin(channel)) {
+                    System.out.println("输入消息发送至服务端: ");
+                    Scanner sc = new Scanner(System.in);
+                    String line = sc.nextLine();
+
+                    for (int i = 0; i < 1000; i++) {
+                        channel.writeAndFlush(new MessageRequestPacket(line));
+                    }
+                }
+            }
+        }).start();
     }
 }
