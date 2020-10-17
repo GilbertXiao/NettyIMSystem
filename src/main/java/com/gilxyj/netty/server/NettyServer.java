@@ -3,6 +3,7 @@ package com.gilxyj.netty.server;
 import com.gilxyj.netty.codec.PacketDecoder;
 import com.gilxyj.netty.codec.PacketEncoder;
 import com.gilxyj.netty.codec.Spliter;
+import com.gilxyj.netty.server.handler.AuthHandler;
 import com.gilxyj.netty.server.handler.LifeCycleTestHandler;
 import com.gilxyj.netty.server.handler.LoginRequestHandler;
 import com.gilxyj.netty.server.handler.MessageRequestHandler;
@@ -48,6 +49,7 @@ public class NettyServer {
                         nioSocketChannel.pipeline().addLast(new Spliter());
                         nioSocketChannel.pipeline().addLast(new PacketDecoder());
                         nioSocketChannel.pipeline().addLast(new LoginRequestHandler());
+                        nioSocketChannel.pipeline().addLast(new AuthHandler());
                         nioSocketChannel.pipeline().addLast(new MessageRequestHandler());
                         nioSocketChannel.pipeline().addLast(new PacketEncoder());
                     }
