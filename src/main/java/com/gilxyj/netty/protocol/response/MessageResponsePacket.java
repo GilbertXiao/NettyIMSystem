@@ -21,11 +21,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MessageResponsePacket extends Packet {
 
-    private String message;
+    private String fromUserId;
 
-    public MessageResponsePacket(String message) {
-        this.message = message;
-    }
+    private String fromUserName;
+
+    private String message;
 
     @Override
     public Byte getCommand() {
