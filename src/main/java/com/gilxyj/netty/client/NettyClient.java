@@ -1,7 +1,11 @@
 package com.gilxyj.netty.client;
 
 
+import com.gilxyj.netty.client.console.ConsoleCommandManager;
+import com.gilxyj.netty.client.console.LoginConsoleCommand;
+import com.gilxyj.netty.client.handler.CreateGroupResponseHandler;
 import com.gilxyj.netty.client.handler.LoginResponseHandler;
+import com.gilxyj.netty.client.handler.LogoutResponseHandler;
 import com.gilxyj.netty.client.handler.MessageResponseHandler;
 import com.gilxyj.netty.codec.PacketDecoder;
 import com.gilxyj.netty.codec.PacketEncoder;
@@ -57,7 +61,9 @@ public class NettyClient {
                         socketChannel.pipeline().addLast(new Spliter());
                         socketChannel.pipeline().addLast(new PacketDecoder());
                         socketChannel.pipeline().addLast(new LoginResponseHandler());
+                        socketChannel.pipeline().addLast(new LogoutResponseHandler());
                         socketChannel.pipeline().addLast(new MessageResponseHandler());
+                        socketChannel.pipeline().addLast(new CreateGroupResponseHandler());
                         socketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 });
@@ -89,36 +95,18 @@ public class NettyClient {
     private static void startConsoleThread(Channel channel) {
 
         Scanner scanner = new Scanner(System.in);
-        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
-
+        ConsoleCommandManager consoleCommandManager = new ConsoleCommandManager();
+        LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
         new Thread(() -> {
             while (!Thread.interrupted()) {
                 if (!SessionUtil.hasLogin(channel)) {
-                    System.out.println("输入用户名登陆:");
-                    String username = scanner.nextLine();
-                    loginRequestPacket.setUsername(username);
-
-                    //密码使用默认的
-                    loginRequestPacket.setPassword("pwd");
-
-                    //发送登陆数据包
-                    channel.writeAndFlush(loginRequestPacket);
-                    waitForLoginResponse();
+                    loginConsoleCommand.exec(scanner, channel);
                 }else{
-                    System.out.println("请输入要发送的userId和发送内容");
-                    String toUserId = scanner.next();
-                    String message = scanner.next();
-                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
+                    consoleCommandManager.exec(scanner, channel);
                 }
             }
         }).start();
     }
 
-    private static void waitForLoginResponse() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

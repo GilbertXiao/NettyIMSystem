@@ -1,8 +1,12 @@
 package com.gilxyj.netty.protocol;
 
+import com.gilxyj.netty.protocol.request.CreateGroupRequestPacket;
 import com.gilxyj.netty.protocol.request.LoginRequestPacket;
+import com.gilxyj.netty.protocol.request.LogoutRequestPacket;
 import com.gilxyj.netty.protocol.request.MessageRequestPacket;
+import com.gilxyj.netty.protocol.response.CreateGroupResponsePacket;
 import com.gilxyj.netty.protocol.response.LoginResponsePacket;
+import com.gilxyj.netty.protocol.response.LogoutResponsePacket;
 import com.gilxyj.netty.protocol.response.MessageResponsePacket;
 import com.gilxyj.netty.serialize.Serializer;
 import com.gilxyj.netty.serialize.impl.JSONSerializer;
@@ -41,6 +45,10 @@ public class PacketCodeC {
         packetTypeMap.put(LOGIN_RESPONSE, LoginResponsePacket.class);
         packetTypeMap.put(MESSAGE_REQUEST, MessageRequestPacket.class);
         packetTypeMap.put(MESSAGE_RESPONSE, MessageResponsePacket.class);
+        packetTypeMap.put(LOGOUT_REQUEST, LogoutRequestPacket.class);
+        packetTypeMap.put(LOGOUT_RESPONSE, LogoutResponsePacket.class);
+        packetTypeMap.put(CREATE_GROUP_REQUEST, CreateGroupRequestPacket.class);
+        packetTypeMap.put(CREATE_GROUP_RESPONSE, CreateGroupResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();
