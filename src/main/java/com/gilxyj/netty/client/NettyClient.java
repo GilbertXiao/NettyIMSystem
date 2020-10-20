@@ -3,15 +3,13 @@ package com.gilxyj.netty.client;
 
 import com.gilxyj.netty.client.console.ConsoleCommandManager;
 import com.gilxyj.netty.client.console.LoginConsoleCommand;
-import com.gilxyj.netty.client.handler.CreateGroupResponseHandler;
-import com.gilxyj.netty.client.handler.LoginResponseHandler;
-import com.gilxyj.netty.client.handler.LogoutResponseHandler;
-import com.gilxyj.netty.client.handler.MessageResponseHandler;
+import com.gilxyj.netty.client.handler.*;
 import com.gilxyj.netty.codec.PacketDecoder;
 import com.gilxyj.netty.codec.PacketEncoder;
 import com.gilxyj.netty.codec.Spliter;
 import com.gilxyj.netty.protocol.request.LoginRequestPacket;
 import com.gilxyj.netty.protocol.request.MessageRequestPacket;
+import com.gilxyj.netty.server.handler.JoinGroupRequestHandler;
 import com.gilxyj.netty.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -64,6 +62,9 @@ public class NettyClient {
                         socketChannel.pipeline().addLast(new LogoutResponseHandler());
                         socketChannel.pipeline().addLast(new MessageResponseHandler());
                         socketChannel.pipeline().addLast(new CreateGroupResponseHandler());
+                        socketChannel.pipeline().addLast(new JoinGroupResponseHandler());
+                        socketChannel.pipeline().addLast(new QuitGroupResponseHandler());
+                        socketChannel.pipeline().addLast(new ListGroupMembersResponseHandler());
                         socketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 });

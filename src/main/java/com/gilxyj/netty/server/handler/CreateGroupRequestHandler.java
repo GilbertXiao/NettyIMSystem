@@ -2,6 +2,7 @@ package com.gilxyj.netty.server.handler;
 
 import com.gilxyj.netty.protocol.request.CreateGroupRequestPacket;
 import com.gilxyj.netty.protocol.response.CreateGroupResponsePacket;
+import com.gilxyj.netty.session.Session;
 import com.gilxyj.netty.util.IDUtil;
 import com.gilxyj.netty.util.SessionUtil;
 import io.netty.channel.Channel;
@@ -49,7 +50,8 @@ public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<Creat
         //3.创建群聊创建结果的响应
         CreateGroupResponsePacket createGroupResponsePacket = new CreateGroupResponsePacket();
         createGroupResponsePacket.setSuccess(true);
-        createGroupResponsePacket.setGroupId(IDUtil.randomId());
+        String groupId = IDUtil.randomId();
+        createGroupResponsePacket.setGroupId(groupId);
         createGroupResponsePacket.setUserNameList(userNameList);
 
         //4.给每个客户端发送拉群通知
@@ -57,5 +59,8 @@ public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<Creat
 
         System.out.println("群创建成功,id为[" + createGroupResponsePacket.getGroupId() + "]");
         System.out.println("群里面有:" + createGroupResponsePacket.getUserNameList());
+
+        //保留群组信息
+        SessionUtil.bindChannelGroup(groupId,channelGroup);
     }
 }
