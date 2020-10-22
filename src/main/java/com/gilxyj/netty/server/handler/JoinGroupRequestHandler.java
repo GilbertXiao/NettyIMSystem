@@ -3,6 +3,7 @@ package com.gilxyj.netty.server.handler;
 import com.gilxyj.netty.protocol.request.JoinGroupRequestPacket;
 import com.gilxyj.netty.protocol.response.JoinGroupResponsePacket;
 import com.gilxyj.netty.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -19,8 +20,14 @@ import io.netty.channel.group.ChannelGroup;
  * @Gitee https://gitee.com/gilbertxiao
  * @create: 2020-10-20 22:05
  **/
+@ChannelHandler.Sharable
 public class JoinGroupRequestHandler extends SimpleChannelInboundHandler<JoinGroupRequestPacket> {
+    private JoinGroupRequestHandler() {
+        
+    }
 
+    public static final JoinGroupRequestHandler INSTANCE = new JoinGroupRequestHandler();
+    
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JoinGroupRequestPacket msg) throws Exception {
         //1.获取groupId,并将用户的channel添加进去

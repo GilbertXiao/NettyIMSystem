@@ -1,6 +1,7 @@
 package com.gilxyj.netty.server.handler;
 
 import com.gilxyj.netty.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -16,7 +17,14 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * @Gitee https://gitee.com/gilbertxiao
  * @create: 2020-10-17 18:01
  **/
+@ChannelHandler.Sharable
 public class AuthHandler extends ChannelInboundHandlerAdapter {
+
+    private AuthHandler() {
+    }
+
+    public static final AuthHandler INSTANCE = new AuthHandler();
+
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

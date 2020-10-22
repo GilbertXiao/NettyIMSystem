@@ -1,6 +1,7 @@
 package com.gilxyj.netty.client.handler;
 
 import com.gilxyj.netty.protocol.response.QuitGroupResponsePacket;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -16,8 +17,13 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @Gitee https://gitee.com/gilbertxiao
  * @create: 2020-10-20 23:14
  **/
+@ChannelHandler.Sharable
 public class QuitGroupResponseHandler extends SimpleChannelInboundHandler<QuitGroupResponsePacket> {
 
+    private QuitGroupResponseHandler() {
+    }
+
+    public static final QuitGroupResponseHandler INSTANCE = new QuitGroupResponseHandler();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, QuitGroupResponsePacket msg) throws Exception {

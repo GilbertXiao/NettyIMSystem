@@ -5,11 +5,11 @@ import com.gilxyj.netty.protocol.response.ListGroupMembersResponsePacket;
 import com.gilxyj.netty.session.Session;
 import com.gilxyj.netty.util.SessionUtil;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 
-import javax.lang.model.element.VariableElement;
 import java.util.ArrayList;
 
 /**
@@ -24,7 +24,13 @@ import java.util.ArrayList;
  * @Gitee https://gitee.com/gilbertxiao
  * @create: 2020-10-20 22:12
  **/
+@ChannelHandler.Sharable
 public class ListGroupMembersRequestHandler extends SimpleChannelInboundHandler<ListGroupMembersRequestPacket> {
+
+    public static final ListGroupMembersRequestHandler INSTANCE = new ListGroupMembersRequestHandler();
+
+    private ListGroupMembersRequestHandler() {
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ListGroupMembersRequestPacket msg) throws Exception {

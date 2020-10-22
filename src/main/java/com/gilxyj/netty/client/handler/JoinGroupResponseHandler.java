@@ -1,6 +1,7 @@
 package com.gilxyj.netty.client.handler;
 
 import com.gilxyj.netty.protocol.response.JoinGroupResponsePacket;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -16,7 +17,13 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @Gitee https://gitee.com/gilbertxiao
  * @create: 2020-10-20 23:05
  **/
+@ChannelHandler.Sharable
 public class JoinGroupResponseHandler extends SimpleChannelInboundHandler<JoinGroupResponsePacket> {
+
+    private JoinGroupResponseHandler() {
+    }
+
+    public static final JoinGroupResponseHandler INSTANCE = new JoinGroupResponseHandler();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JoinGroupResponsePacket msg) throws Exception {

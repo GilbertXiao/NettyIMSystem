@@ -4,6 +4,7 @@ import com.gilxyj.netty.protocol.request.QuitGroupRequestPacket;
 import com.gilxyj.netty.protocol.response.QuitGroupResponsePacket;
 import com.gilxyj.netty.session.Session;
 import com.gilxyj.netty.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -22,7 +23,14 @@ import java.util.ArrayList;
  * @Gitee https://gitee.com/gilbertxiao
  * @create: 2020-10-20 22:21
  **/
+@ChannelHandler.Sharable
 public class QuitGroupRequestHandler extends SimpleChannelInboundHandler<QuitGroupRequestPacket> {
+
+    private QuitGroupRequestHandler() {
+    }
+
+    public static final QuitGroupRequestHandler INSTANCE = new QuitGroupRequestHandler();
+    
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, QuitGroupRequestPacket msg) throws Exception {

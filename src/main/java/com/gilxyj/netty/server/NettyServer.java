@@ -1,5 +1,6 @@
 package com.gilxyj.netty.server;
 
+import com.gilxyj.netty.codec.PacketCodecHandler;
 import com.gilxyj.netty.codec.PacketDecoder;
 import com.gilxyj.netty.codec.PacketEncoder;
 import com.gilxyj.netty.codec.Spliter;
@@ -43,17 +44,18 @@ public class NettyServer {
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
                         //nioSocketChannel.pipeline().addLast(new FirstServerHandler());
                         nioSocketChannel.pipeline().addLast(new Spliter());
-                        nioSocketChannel.pipeline().addLast(new PacketDecoder());
-                        nioSocketChannel.pipeline().addLast(new LoginRequestHandler());
-                        nioSocketChannel.pipeline().addLast(new AuthHandler());
-                        nioSocketChannel.pipeline().addLast(new MessageRequestHandler());
-                        nioSocketChannel.pipeline().addLast(new CreateGroupRequestHandler());
-                        nioSocketChannel.pipeline().addLast(new JoinGroupRequestHandler());
-                        nioSocketChannel.pipeline().addLast(new QuitGroupRequestHandler());
-                        nioSocketChannel.pipeline().addLast(new ListGroupMembersRequestHandler());
-
-                        nioSocketChannel.pipeline().addLast(new LogoutRequestHandler());
-                        nioSocketChannel.pipeline().addLast(new PacketEncoder());
+                        //nioSocketChannel.pipeline().addLast(new PacketDecoder());
+                        nioSocketChannel.pipeline().addLast(PacketCodecHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(LoginRequestHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(AuthHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(MessageRequestHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(CreateGroupRequestHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(JoinGroupRequestHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(QuitGroupRequestHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(ListGroupMembersRequestHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(GroupMessageRequestHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(LogoutRequestHandler.INSTANCE);
+                        //nioSocketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 });
         bind(serverBootstrap,BEGIN_PORT);

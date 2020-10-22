@@ -6,6 +6,7 @@ import com.gilxyj.netty.session.Session;
 import com.gilxyj.netty.util.IDUtil;
 import com.gilxyj.netty.util.SessionUtil;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -26,8 +27,13 @@ import java.util.List;
  * @Gitee https://gitee.com/gilbertxiao
  * @create: 2020-10-19 12:05
  **/
+@ChannelHandler.Sharable
 public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<CreateGroupRequestPacket> {
 
+    private CreateGroupRequestHandler() {
+    }
+
+    public static final CreateGroupRequestHandler INSTANCE = new CreateGroupRequestHandler();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CreateGroupRequestPacket msg) throws Exception {
@@ -61,6 +67,6 @@ public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<Creat
         System.out.println("群里面有:" + createGroupResponsePacket.getUserNameList());
 
         //保留群组信息
-        SessionUtil.bindChannelGroup(groupId,channelGroup);
+        SessionUtil.bindChannelGroup(groupId, channelGroup);
     }
 }

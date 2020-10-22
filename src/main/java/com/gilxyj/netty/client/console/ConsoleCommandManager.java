@@ -32,6 +32,7 @@ public class ConsoleCommandManager implements ConsoleCommand{
         consoleCommandMap.put("joinGroup", new JoinGroupConsoleCommand());
         consoleCommandMap.put("quitGroup", new QuitGroupConsoleCommand());
         consoleCommandMap.put("listMembers", new ListGroupConsoleCommand());
+        consoleCommandMap.put("groupMessage", new GroupMessageConsoleCommand());
     }
 
     @Override

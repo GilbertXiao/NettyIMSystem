@@ -3,6 +3,7 @@ package com.gilxyj.netty.server.handler;
 import com.gilxyj.netty.protocol.request.LogoutRequestPacket;
 import com.gilxyj.netty.protocol.response.LogoutResponsePacket;
 import com.gilxyj.netty.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -18,7 +19,13 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @Gitee https://gitee.com/gilbertxiao
  * @create: 2020-10-19 12:18
  **/
+@ChannelHandler.Sharable
 public class LogoutRequestHandler extends SimpleChannelInboundHandler<LogoutRequestPacket> {
+
+    private LogoutRequestHandler() {
+    }
+    public static final LogoutRequestHandler INSTANCE = new LogoutRequestHandler();
+
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LogoutRequestPacket msg) throws Exception {

@@ -4,14 +4,20 @@ import com.gilxyj.netty.protocol.request.LoginRequestPacket;
 import com.gilxyj.netty.protocol.response.LoginResponsePacket;
 import com.gilxyj.netty.session.Session;
 import com.gilxyj.netty.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 
 import java.util.Date;
 import java.util.UUID;
-
+@ChannelHandler.Sharable
 public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> {
+
+    private LoginRequestHandler() {
+    }
+    public static final LoginRequestHandler INSTANCE = new LoginRequestHandler();
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket loginRequestPacket) {
         System.out.println(new Date() + ": 收到客户端登录请求……");
