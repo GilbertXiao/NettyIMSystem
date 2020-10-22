@@ -51,6 +51,8 @@ public class PacketCodeC {
         packetTypeMap.put(QUIT_GROUP_RESPONSE, QuitGroupResponsePacket.class);
         packetTypeMap.put(GROUP_MESSAGE_REQUEST, GroupMessageRequestPacket.class);
         packetTypeMap.put(GROUP_MESSAGE_RESPONSE, GroupMessageResponsePacket.class);
+        packetTypeMap.put(HEARTBEAT_REQUEST, HeartbeatRequestPacket.class);
+        packetTypeMap.put(HEARTBEAT_RESPONSE, HeartbeatResponsePacket.class);
 
 
         serializerMap = new HashMap<>();

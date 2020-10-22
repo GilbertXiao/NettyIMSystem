@@ -8,9 +8,11 @@ import com.gilxyj.netty.codec.PacketCodecHandler;
 import com.gilxyj.netty.codec.PacketDecoder;
 import com.gilxyj.netty.codec.PacketEncoder;
 import com.gilxyj.netty.codec.Spliter;
+import com.gilxyj.netty.handler.SimpleIdleStateHandler;
 import com.gilxyj.netty.protocol.PacketCodeC;
 import com.gilxyj.netty.protocol.request.LoginRequestPacket;
 import com.gilxyj.netty.protocol.request.MessageRequestPacket;
+import com.gilxyj.netty.server.handler.HeartbeatRequestHandler;
 import com.gilxyj.netty.server.handler.JoinGroupRequestHandler;
 import com.gilxyj.netty.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
@@ -58,6 +60,8 @@ public class NettyClient {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         //socketChannel.pipeline().addLast(new FirstClientHandler());
                         //socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4));
+                        //心跳检测
+                        socketChannel.pipeline().addLast(new SimpleIdleStateHandler());
                         socketChannel.pipeline().addLast(new Spliter());
                         //socketChannel.pipeline().addLast(new PacketDecoder());
                         socketChannel.pipeline().addLast(PacketCodecHandler.INSTANCE);
@@ -69,6 +73,8 @@ public class NettyClient {
                         socketChannel.pipeline().addLast(QuitGroupResponseHandler.INSTANCE);
                         socketChannel.pipeline().addLast(ListGroupMembersResponseHandler.INSTANCE);
                         socketChannel.pipeline().addLast(GroupMessageResponseHandler.INSTANCE);
+                        socketChannel.pipeline().addLast(GroupMessageResponseHandler.INSTANCE);
+                        socketChannel.pipeline().addLast(HeartBeatTimeHandler.INSTANCE);
                         //socketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 });

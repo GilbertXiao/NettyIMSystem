@@ -4,6 +4,7 @@ import com.gilxyj.netty.codec.PacketCodecHandler;
 import com.gilxyj.netty.codec.PacketDecoder;
 import com.gilxyj.netty.codec.PacketEncoder;
 import com.gilxyj.netty.codec.Spliter;
+import com.gilxyj.netty.handler.SimpleIdleStateHandler;
 import com.gilxyj.netty.server.handler.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -43,10 +44,13 @@ public class NettyServer {
                     @Override
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
                         //nioSocketChannel.pipeline().addLast(new FirstServerHandler());
+                        //心跳检测
+                        nioSocketChannel.pipeline().addLast(new SimpleIdleStateHandler());
                         nioSocketChannel.pipeline().addLast(new Spliter());
                         //nioSocketChannel.pipeline().addLast(new PacketDecoder());
                         nioSocketChannel.pipeline().addLast(PacketCodecHandler.INSTANCE);
                         nioSocketChannel.pipeline().addLast(LoginRequestHandler.INSTANCE);
+                        nioSocketChannel.pipeline().addLast(HeartbeatRequestHandler.INSTANCE);
                         nioSocketChannel.pipeline().addLast(AuthHandler.INSTANCE);
                         nioSocketChannel.pipeline().addLast(MessageRequestHandler.INSTANCE);
                         nioSocketChannel.pipeline().addLast(CreateGroupRequestHandler.INSTANCE);
