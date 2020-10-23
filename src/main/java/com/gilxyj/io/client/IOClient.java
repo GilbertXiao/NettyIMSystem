@@ -27,6 +27,11 @@ public class IOClient {
                         try {
                             socket.getOutputStream().write((new Date() + ":hello world").getBytes());
                             Thread.sleep(20000);
+                            byte[] bytes= new byte[1024];
+                            int len = 0;
+                            while ((len = socket.getInputStream().read(bytes)) != -1) {
+                                System.out.println(new String(bytes, 0, len));
+                            }
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }

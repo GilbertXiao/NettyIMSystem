@@ -34,7 +34,6 @@ public class FirstServerHandler extends ChannelInboundHandlerAdapter {
 
     private ByteBuf getByteBuf(ChannelHandlerContext ctx) {
         ByteBuf buffer = ctx.alloc().buffer();
-
         buffer.writeBytes("坚持下去，你也可以的".getBytes(Charset.forName("utf-8")));
         return buffer;
     }
